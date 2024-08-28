@@ -1,0 +1,12 @@
+//_signOut Function
+_signOut() async{
+await FirebaseAuth.instance.signOut();
+await GoogleSignIn().signOut();
+}
+
+//Code for printing user info in Home Screen
+// for (var i in data!) {
+
+log("Data: ${jsonEncode(i.data())}");
+ list.add(i.data()['name']);
+ }
