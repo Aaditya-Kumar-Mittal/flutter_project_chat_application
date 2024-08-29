@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_project_chat_application/widgets/message_card.dart';
 
+import '../api/apis.dart';
 import '../main.dart';
 import '../models/chat_user.dart';
+import '../models/message.dart';
 
 class ChatScreen extends StatefulWidget {
   final ChatUser user;
@@ -14,6 +17,12 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  //lost for storing all messages
+  List<Message> _list = [];
+
+  //text controller for handling text messages
+  final _textController = TextEditingController();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -26,12 +35,71 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromRGBO(167, 233, 255, 1.0),
       appBar: AppBar(
         automaticallyImplyLeading: false,
         flexibleSpace: _appBar(),
       ),
       body: Column(
         children: [
+          Expanded(
+            child: StreamBuilder(
+              stream: APIS.getAllMessages(widget.user),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                  case ConnectionState.none:
+                    return const SizedBox();
+                  case ConnectionState.active:
+                  case ConnectionState.done:
+                    final data = snapshot.data?.docs;
+                    // log('Data in Messages: ${jsonEncode(data![0].data())}');
+                    _list =
+                        data?.map((e) => Message.fromJson(e.data())).toList() ??
+                            [];
+
+                    /*
+                    //for test clear the list for the first time
+                    list.clear();
+                    //Dummy data for messages
+                    list.add(Message(
+                        toId: 'xyz',
+                        msg: "Hello",
+                        read: '',
+                        type: Type.text,
+                        fromId: APIS.user.uid,
+                        sent: '12:00 AM'));
+                    list.add(Message(
+                        toId: APIS.user.uid,
+                        msg: "Hi",
+                        read: '',
+                        type: Type.text,
+                        fromId: 'xyz',
+                        sent: '12:05 AM'));
+                    */
+
+                    if (_list.isNotEmpty) {
+                      return ListView.builder(
+                        itemCount: _list.length,
+                        physics: const BouncingScrollPhysics(),
+                        padding: EdgeInsets.only(top: mq.height * 0.003),
+                        itemBuilder: (context, index) {
+                          return MessageCard(message: _list[index]);
+                          // return Text('Message : ${list[index]}');
+                        },
+                      );
+                    } else {
+                      return const Center(
+                        child: Text(
+                          "Say Hi! 👋👋",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      );
+                    }
+                }
+              },
+            ),
+          ),
           _chatInput(),
         ],
       ),
@@ -80,7 +148,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   children: [
                     Text(
                       widget.user.name,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 18,
                           color: Colors.white,
                           fontWeight: FontWeight.w500),
@@ -105,7 +173,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget _chatInput() {
     return Padding(
       padding: EdgeInsets.symmetric(
-          vertical: mq.height * 0.01, horizontal: mq.width * 0.03),
+          vertical: mq.height * 0.04, horizontal: mq.width * 0.03),
       child: Row(
         children: [
           Expanded(
@@ -124,9 +192,10 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   Expanded(
                     child: TextField(
+                      controller: _textController,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           hintText: "Type something...",
                           hintStyle:
                               TextStyle(color: Colors.blue, fontSize: 17),
@@ -155,12 +224,18 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           //show message button
           MaterialButton(
-            shape: CircleBorder(),
+            shape: const CircleBorder(),
             minWidth: 0,
-            padding: EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 10),
-            onPressed: () {},
+            padding:
+                const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 10),
+            onPressed: () {
+              if (_textController.text.isNotEmpty) {
+                APIS.sendMessage(widget.user, _textController.text);
+                _textController.text = '';
+              }
+            },
             color: Colors.white,
-            child: Icon(
+            child: const Icon(
               Icons.send,
               color: Colors.blue,
               size: 28,

@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 import '../models/chat_user.dart';
+import '../models/message.dart';
 
 //Class for CRUD APIS
 class APIS {
@@ -122,5 +123,42 @@ class APIS {
         .update({'image': self.image});
 
     log('Profile picture updated successfully');
+  }
+
+  ///*************Chat Screen Related APIS *******************
+
+  //chats(collection) --> conversation_id (doc) --> messages(collection) -->message(doc)
+
+  //for getting conversation id
+  static String getConversationID(String id) => user.uid.hashCode <= id.hashCode
+      ? '${user.uid}_$id'
+      : '${id}_${user.uid}';
+
+  //for getting all messages of a specific conversation from the firebase Reading Operation
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(
+      ChatUser user) {
+    return firestore
+        .collection('chats/${getConversationID(user.id)}/messages/')
+        .snapshots();
+  }
+
+  //for sending messages
+  static Future<void> sendMessage(ChatUser chatUser, String msg) async {
+    //message sending time also used as id
+    final time = DateTime.now().millisecondsSinceEpoch.toString();
+
+    final Message message = Message(
+        toId: chatUser.id,
+        msg: msg,
+        read: '',
+        type: Type.text,
+        fromId: user.uid,
+        sent: time);
+
+    //Preparing a doc id
+    final ref = firestore
+        .collection('chats/${getConversationID(chatUser.id)}/messages/');
+
+    await ref.doc().set(message.toJson());
   }
 }
