@@ -58,26 +58,6 @@ class _ChatScreenState extends State<ChatScreen> {
                         data?.map((e) => Message.fromJson(e.data())).toList() ??
                             [];
 
-                    /*
-                    //for test clear the list for the first time
-                    list.clear();
-                    //Dummy data for messages
-                    list.add(Message(
-                        toId: 'xyz',
-                        msg: "Hello",
-                        read: '',
-                        type: Type.text,
-                        fromId: APIS.user.uid,
-                        sent: '12:00 AM'));
-                    list.add(Message(
-                        toId: APIS.user.uid,
-                        msg: "Hi",
-                        read: '',
-                        type: Type.text,
-                        fromId: 'xyz',
-                        sent: '12:05 AM'));
-                    */
-
                     if (_list.isNotEmpty) {
                       return ListView.builder(
                         itemCount: _list.length,
@@ -173,7 +153,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget _chatInput() {
     return Padding(
       padding: EdgeInsets.symmetric(
-          vertical: mq.height * 0.04, horizontal: mq.width * 0.03),
+          vertical: mq.height * 0.05, horizontal: mq.width * 0.03),
       child: Row(
         children: [
           Expanded(

@@ -10,3 +10,23 @@ await GoogleSignIn().signOut();
 log("Data: ${jsonEncode(i.data())}");
  list.add(i.data()['name']);
  }
+
+   /*
+                     //for test clear the list for the first time
+                     list.clear();
+                     //Dummy data for messages
+                     list.add(Message(
+                         toId: 'xyz',
+                         msg: "Hello",
+                         read: '',
+                         type: Type.text,
+                         fromId: APIS.user.uid,
+                         sent: '12:00 AM'));
+                     list.add(Message(
+                         toId: APIS.user.uid,
+                         msg: "Hi",
+                         read: '',
+                         type: Type.text,
+                         fromId: 'xyz',
+                         sent: '12:05 AM'));
+                     */

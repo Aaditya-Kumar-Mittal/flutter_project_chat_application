@@ -147,6 +147,7 @@ class APIS {
     //message sending time also used as id
     final time = DateTime.now().millisecondsSinceEpoch.toString();
 
+    //Message to send
     final Message message = Message(
         toId: chatUser.id,
         msg: msg,
@@ -159,6 +160,34 @@ class APIS {
     final ref = firestore
         .collection('chats/${getConversationID(chatUser.id)}/messages/');
 
-    await ref.doc().set(message.toJson());
+    await ref.doc(time).set(message.toJson());
+  }
+
+  //update read status of message
+  static Future<void> updateMessageReadStatus(Message message) async {
+    final docRef = firestore
+        .collection('chats/${getConversationID(message.fromId)}/messages/')
+        .doc(message.sent);
+
+    final docSnapshot = await docRef.get();
+
+    if (docSnapshot.exists) {
+      await docRef
+          .update({'read': DateTime.now().millisecondsSinceEpoch.toString()});
+    } else {
+      log('Message document not found: ${message.sent}');
+    }
+
+    /*firestore.collection('chats/${getConversationID(message.fromId)}/messages/').doc(message.sent).update({'read': DateTime.now().millisecondsSinceEpoch.toString()});*/
+  }
+
+  //get only last message of a specific chat
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getLastMessage(
+      ChatUser user) {
+    return firestore
+        .collection('chats/${getConversationID(user.id)}/messages/')
+        .orderBy('sent', descending: true)
+        .limit(1)
+        .snapshots();
   }
 }
