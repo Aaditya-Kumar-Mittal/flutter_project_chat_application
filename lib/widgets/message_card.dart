@@ -333,8 +333,10 @@ class _MessageCardState extends State<MessageCard> {
                 maxLines: null,
                 onChanged: (value) => updatedMsg = value,
                 decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(15)))),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                  ),
+                ),
               ),
 
               //actions
