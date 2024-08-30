@@ -110,8 +110,22 @@
 | Login Screen  | Google Sign Up Screen |
 |:-------:|:-------:|
 | ![Main Screens](./images/screenshots/1_login_screen_image.png) |![Main Screens](./images/screenshots/2_google_sign_up_screen.png) |
+
 | Home Screen  | Other User Dialog Box |
+|:-------:|:-------:|
 | ![Main Screens](./images/screenshots/3_home_screen.png) |![Main Screens](./images/screenshots/4_other_user_dialog.png) |
+
+| Other User Profile Screen | Chat Screen |
+|:-------:|:-------:|
+| ![Main Screens](./images/screenshots/5_other_user_profile_screen.png) |![Main Screens](./images/screenshots/7_chat_screen_images_text_messages.png) |
+
+| Chat Editing Options and Info | Insert Emojis Functionality  |
+|:-------:|:-------:|
+| ![Main Screens](./images/screenshots/8_chat_message_options.png) |![Main Screens](./images/screenshots/9_chat_emoji_functionality.png) |
+
+| User Profile Screen  | User Profile Screen Editing Options |
+|:-------:|:-------:|
+| ![Main Screens](./images/screenshots/10_user_profile_screen_logout_functionality.png) |![Main Screens](./images/screenshots/11_update_user_info_functionality.png) |
 
 ---
 
@@ -299,11 +313,15 @@
     - In synchronous programming suppose, I made an API request to a server. The request would be executed first and no other request can be executed in the meantime unless the response for the first request is received.
     - In asynchronous programming, requests can be made and would be tracked until the responses are received and once received, they would be executed. Many requests can be made at the same time. It reduces wait time for many API Requests
 
-    ![image.png](CSE443%20Seminar%20on%20Summer%20Training%2058a245adab7848bf9238657c6713ff46/image%206.png)
+    | Await and Async Keyword|
+    |:-------:|
+    | ![Main Screens](./images/concepts/image_4.png) |
 
     - This reduces the total time for a process execution.
 
-    ![image.png](CSE443%20Seminar%20on%20Summer%20Training%2058a245adab7848bf9238657c6713ff46/image%207.png)
+    | Synchronous and Asynchronous Requests|
+    |:-------:|
+    | ![Main Screens](./images/concepts/image_5.png) |
 
 - `Async` in Flutter returns a Future object. → We don’t have the data right now, but in future once received the corresponding data, it would be notified to the application.
 - `Async*` in Flutter returns a Stream object.
