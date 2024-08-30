@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_project_chat_application/widgets/profile_dialog.dart';
 
 import '../api/apis.dart';
 import '../helper/date_time_format_util.dart';
@@ -44,16 +45,23 @@ class _ChatUserCardState extends State<ChatUserCard> {
             }
             return ListTile(
               //user profile picture
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(mq.height * .3),
-                child: CachedNetworkImage(
-                  width: mq.height * 0.055,
-                  height: mq.height * 0.055,
-                  imageUrl: widget.user.image,
-                  placeholder: (context, url) =>
-                      const CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => const CircleAvatar(
-                    child: Icon(Icons.person),
+              leading: InkWell(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (_) => ProfileDialog(user: widget.user));
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(mq.height * .3),
+                  child: CachedNetworkImage(
+                    width: mq.height * 0.055,
+                    height: mq.height * 0.055,
+                    imageUrl: widget.user.image,
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => const CircleAvatar(
+                      child: Icon(Icons.person),
+                    ),
                   ),
                 ),
               ),
@@ -66,13 +74,24 @@ class _ChatUserCardState extends State<ChatUserCard> {
 
               //user about or last message
               subtitle: Text(
-                _message != null ? _message!.msg : widget.user.about,
+                _message != null
+                    ? _message!.type == Type.image
+                        ? 'Image'
+                        : _message!.msg
+                    : widget.user.about,
                 maxLines: 1,
               ),
 
               //chat message time
               trailing: _message == null
-                  ? null //show nothing when message is sent
+                  ? Container(
+                      width: 15,
+                      height: 15,
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ) //show nothing when message is sent
                   : _message!.read.isEmpty && _message!.fromId != APIS.user.uid
                       ? //for unread message
                       Container(
@@ -87,7 +106,8 @@ class _ChatUserCardState extends State<ChatUserCard> {
                       Text(
                           DateTimeFormatUtil.getLastMessageTime(
                               context: context, time: _message!.sent),
-                          style: TextStyle(color: Colors.black26, fontSize: 15),
+                          style: const TextStyle(
+                              color: Colors.black26, fontSize: 15),
                         ),
             );
           },

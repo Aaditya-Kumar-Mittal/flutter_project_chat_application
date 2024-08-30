@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
@@ -52,6 +53,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               //for showing progress dialog
               Dialogs.showProgressIndicator(context);
 
+              await APIS.updateActiveStatus(false);
+
               //log out from the application
               await APIS.auth.signOut().then((value) async {
                 await GoogleSignIn().signOut().then((value) {
@@ -60,6 +63,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                   //for moving to home screen
                   Navigator.pop(context);
+
+                  APIS.auth = FirebaseAuth.instance;
 
                   //Removes home screen from back stack and never moves back to home screen, stay on login screen
                   Navigator.pushReplacement(context,
